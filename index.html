@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shankar Chaurasiya | Personal Card</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* Overlay Style */
+    #start-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #start-overlay span {
+      font-size: 1rem;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    #start-overlay::after {
+      content: "▶ Tap to Start";
+      animation: pulse 2s infinite;
+      margin-top: 20px;
+    }
+
+    /* Anonymous Message Box */
+    .anonymous-message-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      bakgr likh sakta hai rgba(255, 255, 255, 0.85);
+      padding: 15px;
+      border-radius: 10px;
+      z-index: 1000;
+      width: 300px;
+      display: none; /* hidden initially */
+    }
+
+    .anonymous-message-container h2 {
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    #anonymousForm {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #anonymousInput {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    #anonymousForm button {
+      padding: 10px;
+      background-color: #ff4655;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #anonymousForm button:hover {
+      background-color: #0ff;
+      color: #121212;
+    }
+
+    #confirmationMessage {
+      color: #0f0;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 🔊 Background Music -->
+  <audio id="bg-music" loop>
+    <source src="audio/bgm.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- 🖱️ Start Overlay -->
+  <div id="start-overlay">
+    <div>Welcome to Shankar's World 🌍</div>
+    <span>Click anywhere to begin</span>
+  </div>
+
+  <!-- Background Video -->
+  <video autoplay muted loop id="video-background">
+    <source src="yoru-bg.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Dark Overlay -->
+  <div class="overlay"></div>
+
+  <!-- Main Card Content -->
+  <div class="container" style="display: none;" id="main-content">
+    <div class="card">
+      <img src="profile.jpg" alt="Profile Picture" class="profile-img"/>
+      <h1>Shankar Chaurasiya</h1>
+      <p class="tagline">Economics Student | Dreamer | Fighter</p>
+
+      <div class="links">
+        <a href="https://instagram.com/notshvnkar" target="_blank">Instagram</a>
+        <a href="https://linkedin.com/in/shankar-chaurasiya-55053b253/" target="_blank">LinkedIn</a>
+        <a href="https://tracker.gg/valorant/profile/riot/phe9menal%23P9ML" target="_blank">TRN</a>
+      </div>
+
+      <p class="quote">"Success is not an accident, it's hard work, perseverance, and love for what you are doing."</p>
+    </div>
+  </div>
+
+  <!-- Anonymous Message Box -->
+  <div class="anonymous-message-container">
+    <h2>Send Anonymous Message</h2>
+    <form id="anonymousForm" action="https://formspree.io/f/xnnddaad" method="POST">
+      <input type="text" name="message" id="anonymousInput" placeholder="Hey Anonymous..." required>
+      <button type="submit">Send</button>
+    </form>
+    <div id="confirmationMessage" style="display: none;">Message sent ✅</div>
+  </div>
+
+  <!-- 🔍 Zoom Modal -->
+  <div id="img-modal" class="img-modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="zoomed-img">
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const overlay = document.getElementById("start-overlay");
+    const music = document.getElementById("bg-music");
+    const main = document.getElementById("main-content");
+    const anonBox = document.querySelector(".anonymous-message-container");
+
+    overlay.addEventListener("click", () => {
+      overlay.style.display = "none";
+      main.style.display = "block";
+      anonBox.style.display = "block";
+      music.play().catch((e) => console.log("Autoplay error:", e));
+    });
+
+    // Anonymous Form Submit
+    document.getElementById("anonymousForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          document.getElementById("confirmationMessage").style.display = "block";
+          form.reset();
+        }
+      });
+    });
+
+    // Image Modal Logic
+    const modal = document.querySelector('.img-modal');
+    const modalImg = document.querySelector('.img-modal img');
+    const closeBtn = document.querySelector('.img-modal .close');
+
+    document.querySelectorAll('.profile-img').forEach(img => {
+      img.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        modalImg.src = img.src;
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      modalImg.src = '';
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        modalImg.src = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
